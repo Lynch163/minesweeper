@@ -4,7 +4,6 @@
 
 <script>
 export default {
-  name: 'minesweeper-timer',
   props: {
     finished: {
       type: Boolean,

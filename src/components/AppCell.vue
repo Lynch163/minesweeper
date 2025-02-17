@@ -11,7 +11,6 @@
 
 <script>
 export default {
-  name: 'minesweeper-cell',
   props: {
     cell: {
       type: Object,

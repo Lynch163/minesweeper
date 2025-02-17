@@ -29,7 +29,6 @@
 import MinesweeperGame from "@/components/AppGame.vue";
 
 export default {
-  name: 'game',
   components: {MinesweeperGame},
   data() {
     return {

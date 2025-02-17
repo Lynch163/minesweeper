@@ -7,7 +7,7 @@
       <a href="#" @click.prevent="initGrid">
         &#9786;
       </a>
-      <MinesweeperTimer class="minesweeper-timer" :finished="finished"></MinesweeperTimer>
+      <MinesweeperTimer class="minesweeper-timer" :finished="finished" />
     </div>
 
     <div class="minesweeper-grid" :style="getGridStyle()">
@@ -19,8 +19,7 @@
         @click.right.native="addFlag(cell)"
         @dblclick.native.prevent="doubleClick(cell, i)"
         @contextmenu.native.prevent
-      >
-      </MinesweeperCell>
+      />
     </div>
   </div>
 </template>
@@ -30,7 +29,6 @@ import MinesweeperCell from './AppCell.vue';
 import MinesweeperTimer from './AppTimer.vue';
 
 export default {
-  name: 'minesweeper-game',
   components: {
     MinesweeperCell,
     MinesweeperTimer,

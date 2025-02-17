@@ -85,7 +85,6 @@
 
 <script>
 export default {
-  name: 'home',
   data() {
     return {
       rows: 9,
@@ -97,22 +96,6 @@ export default {
     this.initParams(this.$route.params);
   },
   methods: {
-    doesItFit() {
-      const { rows, cols, bombs } = this;
-      if ((rows * cols) < bombs) {
-        return false;
-      }
-      if (rows > 50) {
-        return false;
-      }
-      if (cols > 50) {
-        return false;
-      }
-      if (bombs > 99) {
-        return false;
-      }
-      return true;
-    },
     initParams(params) {
       const { rows, cols, bombs } = params;
       this.rows = parseInt(rows) || 9;
