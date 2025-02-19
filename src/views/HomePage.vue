@@ -21,7 +21,7 @@
             <p class="pt-3">Простая игра с полем 9х9</p>
           </div>
           <div class="col-12 col-md-4 py-3">
-            <RouterLink href="#" class="btn btn-lg btn-block btn-success" :to="{
+            <RouterLink href="#" class="btn btn-lg btn-block btn-warning" :to="{
               name: 'game',
               params: {
                 rows: 16,
@@ -34,7 +34,7 @@
             <p class="pt-3">Средний уровень с полем 16х16</p>
           </div>
           <div class="col-12 col-md-4 py-3">
-            <RouterLink href="#" class="btn btn-lg btn-block btn-success" :to="{
+            <RouterLink href="#" class="btn btn-lg btn-block btn-danger" :to="{
               name: 'game',
               params: {
                 rows: 16,
