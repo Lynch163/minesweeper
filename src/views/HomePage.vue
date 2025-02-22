@@ -1,3 +1,29 @@
+<script setup>
+import {useRouter} from "vue-router";
+import {ref} from "vue";
+
+const router = useRouter();
+
+const rowsCount = ref(9);
+const colsCount = ref(9);
+const bombsCount = ref(10);
+
+function updateRoute() {
+    const rows = rowsCount.value;
+    const cols = colsCount.value;
+    const bombs = bombsCount.value;
+    const params = Object.assign({
+      rows,
+      cols,
+      bombs,
+    });
+    router.push({
+      name: 'game',
+      params,
+    });
+}
+</script>
+
 <template>
   <div>
     <div class="container py-3">
@@ -52,21 +78,21 @@
 
     <form class="bg-primary py-3 text-light" @submit="updateRoute">
       <div class="container">
-        <h3>Либо выберите свои параметры</h3>
+        <h3>Либо укажите свои параметры</h3>
         <div class="row">
           <div class="form-group col-12 col-md-4">
             <label for="input-rows"> Кол-во строк</label>
-            <input type="number" v-model.number="rows" class="form-control"
+            <input type="number" v-model="rowsCount" class="form-control"
                    min="1" max="50" id="input-rows">
           </div>
           <div class="form-group col-12 col-md-4">
             <label for="input-cols">Кол-во колонок</label>
-            <input type="number" v-model.number="cols" class="form-control"
+            <input type="number" v-model="colsCount" class="form-control"
                    min="1" max="50" id="input-cols">
           </div>
           <div class="form-group col-12 col-md-4">
             <label for="input-bombs">Кол-во мин</label>
-            <input type="number" v-model.number="bombs" class="form-control"
+            <input type="number" v-model="bombsCount" class="form-control"
                    min="1" max="99" id="input-bombs">
           </div>
         </div>
@@ -82,39 +108,3 @@
     </form>
   </div>
 </template>
-
-<script>
-export default {
-  data() {
-    return {
-      rows: 9,
-      cols: 9,
-      bombs: 10,
-    };
-  },
-  mounted() {
-    this.initParams(this.$route.params);
-  },
-  methods: {
-    initParams(params) {
-      const { rows, cols, bombs } = params;
-      this.rows = parseInt(rows) || 9;
-      this.cols = parseInt(cols) || 9;
-      this.bombs = parseInt(bombs) || 10;
-    },
-    updateRoute(extraParams) {
-      const { rows, cols, bombs } = this;
-      const params = Object.assign({
-        rows,
-        cols,
-        bombs,
-      }, extraParams);
-
-      this.$router.push({
-        name: 'game',
-        params,
-      });
-    },
-  },
-};
-</script>
