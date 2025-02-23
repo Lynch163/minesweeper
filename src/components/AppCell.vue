@@ -1,5 +1,31 @@
+<script setup>
+import {computed} from "vue";
+
+const prop = defineProps({
+  cell: {
+    type: Object,
+    required: true,
+  },
+});
+
+const getClass = computed(() => {
+  const cell = prop.cell;
+  if (cell.isOpen && cell.hasBomb) {
+    return 'minesweeper-bomb';
+  }
+  if (cell.isOpen) {
+    return 'minesweeper-open';
+  }
+  if (cell.hasFlag) {
+    return 'minesweeper-flag';
+  }
+  return '';
+});
+
+</script>
+
 <template>
-  <div class="minesweeper-cell" :class="getClass()">
+  <div class="minesweeper-cell" :class="getClass">
     <div v-if="cell.isOpen && cell.bombCount">
       {{ cell.bombCount }}
     </div>
@@ -9,33 +35,7 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    cell: {
-      type: Object,
-      required: true,
-    },
-  },
-  methods: {
-    getClass() {
-      const { cell } = this;
-      if (cell.isOpen && cell.hasBomb) {
-        return 'minesweeper-bomb';
-      }
-      if (cell.isOpen) {
-        return 'minesweeper-open';
-      }
-      if (cell.hasFlag) {
-        return 'minesweeper-flag';
-      }
-      return '';
-    },
-  },
-};
-</script>
-
-<style lang="scss">
+<style lang="scss" scoped>
   .minesweeper {
     &-cell {
       align-items: center;
