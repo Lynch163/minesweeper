@@ -1,27 +1,27 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
-import AppGame from '@/components/AppGame.vue'
+import { computed, onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
+import AppGame from '@/components/AppGame.vue';
 
-const route = useRoute()
+const route = useRoute();
 
-const rows = ref(0)
-const cols = ref(0)
-const bombs = ref(0)
+const rows = ref(0);
+const cols = ref(0);
+const bombs = ref(0);
 
 const doesItFit = computed(() => {
-  return rows.value * cols.value >= bombs.value
-})
+  return rows.value * cols.value >= bombs.value;
+});
 
 function initParams(params) {
-  rows.value = Number(params.rows)
-  cols.value = Number(params.cols)
-  bombs.value = Number(params.bombs)
+  rows.value = Number(params.rows);
+  cols.value = Number(params.cols);
+  bombs.value = Number(params.bombs);
 }
 
 onMounted(() => {
-  initParams(route.params)
-})
+  initParams(route.params);
+});
 </script>
 
 <template>

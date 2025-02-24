@@ -1,26 +1,26 @@
 <script setup>
-import { computed } from 'vue'
+import { computed } from 'vue';
 
 const prop = defineProps({
   cell: {
     type: Object,
-    required: true,
-  },
-})
+    required: true
+  }
+});
 
 const getClass = computed(() => {
-  const cell = prop.cell
+  const cell = prop.cell;
   if (cell.isOpen && cell.hasBomb) {
-    return 'minesweeper-bomb'
+    return 'minesweeper-bomb';
   }
   if (cell.isOpen) {
-    return 'minesweeper-open'
+    return 'minesweeper-open';
   }
   if (cell.hasFlag) {
-    return 'minesweeper-flag'
+    return 'minesweeper-flag';
   }
-  return ''
-})
+  return '';
+});
 </script>
 
 <template>

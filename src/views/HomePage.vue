@@ -1,26 +1,26 @@
 <script setup>
-import { useRouter } from 'vue-router'
-import { ref } from 'vue'
+import { useRouter } from 'vue-router';
+import { ref } from 'vue';
 
-const router = useRouter()
+const router = useRouter();
 
-const rowsCount = ref(9)
-const colsCount = ref(9)
-const bombsCount = ref(10)
+const rowsCount = ref(9);
+const colsCount = ref(9);
+const bombsCount = ref(10);
 
 function updateRoute() {
-  const rows = rowsCount.value
-  const cols = colsCount.value
-  const bombs = bombsCount.value
+  const rows = rowsCount.value;
+  const cols = colsCount.value;
+  const bombs = bombsCount.value;
   const params = Object.assign({
     rows,
     cols,
-    bombs,
-  })
+    bombs
+  });
   router.push({
     name: 'game',
-    params,
-  })
+    params
+  });
 }
 </script>
 
@@ -42,8 +42,8 @@ function updateRoute() {
                 params: {
                   rows: 9,
                   cols: 9,
-                  bombs: 10,
-                },
+                  bombs: 10
+                }
               }"
             >
               😉 Легкий
@@ -59,8 +59,8 @@ function updateRoute() {
                 params: {
                   rows: 16,
                   cols: 16,
-                  bombs: 40,
-                },
+                  bombs: 40
+                }
               }"
             >
               🤨 Средний
@@ -76,8 +76,8 @@ function updateRoute() {
                 params: {
                   rows: 16,
                   cols: 30,
-                  bombs: 99,
-                },
+                  bombs: 99
+                }
               }"
             >
               🤯 Эксперт
