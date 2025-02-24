@@ -1,7 +1,7 @@
 <script setup>
 import {computed, onMounted, ref} from "vue";
 import {useRoute} from "vue-router";
-import MinesweeperGame from "@/components/AppGame.vue";
+import AppGame from "@/components/AppGame.vue";
 
 const route = useRoute();
 
@@ -40,11 +40,11 @@ onMounted(() => {
              v-if="doesItFit"
              :class="{'col-md-9 col-lg-7': cols < 14}"
         >
-          <MinesweeperGame :rows="rows" :cols="cols" :bombs="bombs" />
+          <AppGame :rows="rows" :cols="cols" :bombs="bombs" />
         </div>
         <div v-else>
           <h3 class="text-center">416: Выход за пределы</h3>
-          <p>При заданном поле, количество мин должно быть не более {{ cols*rows }}</p>
+          <p>При заданном поле, количество мин должно быть не более {{ cols * rows }}</p>
         </div>
       </div>
     </div>

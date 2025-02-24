@@ -7,11 +7,11 @@
       <a href="#" @click.prevent="initGrid">
         &#9786;
       </a>
-      <MinesweeperTimer class="minesweeper-timer" :finished="finished" />
+      <AppTimer class="minesweeper-timer" :finished="finished" />
     </div>
 
     <div class="minesweeper-grid" :style="getGridStyle()">
-      <MinesweeperCell
+      <AppCell
         v-for="(cell, i) in grid"
         :key="i"
         :cell="cell"
@@ -25,13 +25,13 @@
 </template>
 
 <script>
-import MinesweeperCell from './AppCell.vue';
-import MinesweeperTimer from './AppTimer.vue';
+import AppCell from '@/components/AppCell.vue';
+import AppTimer from "@/components/AppTimer.vue";
 
 export default {
   components: {
-    MinesweeperCell,
-    MinesweeperTimer,
+    AppTimer,
+    AppCell,
   },
   props: {
     cols: {
@@ -235,7 +235,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   .minesweeper {
     &-status {
       display: flex;

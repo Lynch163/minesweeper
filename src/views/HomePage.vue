@@ -39,7 +39,7 @@ function updateRoute() {
               params: {
                 rows: 9,
                 cols: 9,
-                bombs: 10,
+                bombs: 10
               }}">
               😉
               Легкий
@@ -52,7 +52,7 @@ function updateRoute() {
               params: {
                 rows: 16,
                 cols: 16,
-                bombs: 40,
+                bombs: 40
               }}">
               🤨
               Средний
@@ -65,7 +65,7 @@ function updateRoute() {
               params: {
                 rows: 16,
                 cols: 30,
-                bombs: 99,
+                bombs: 99
               }}">
               🤯
               Эксперт
