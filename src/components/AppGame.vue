@@ -1,213 +1,162 @@
-<script>
+<script setup>
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import AppCell from '@/components/AppCell.vue';
 import AppTimer from '@/components/AppTimer.vue';
 
-export default {
-  components: {
-    AppTimer,
-    AppCell
+const props = defineProps({
+  cols: {
+    type: Number,
+    default: 9
   },
-  props: {
-    cols: {
-      type: Number,
-      default: 9
-    },
-    rows: {
-      type: Number,
-      default: 9
-    },
-    bombs: {
-      type: Number,
-      default: 10
-    }
+  rows: {
+    type: Number,
+    default: 9
   },
-  data() {
-    return {
+  bombs: {
+    type: Number,
+    default: 10
+  }
+});
+
+const bombCount = ref(0);
+const finished = ref(false);
+const won = ref(false);
+const grid = ref([]);
+
+const getGridStyle = computed(() => {
+  return `grid-template-columns: repeat(${props.cols}, 1fr);`;
+});
+
+function initGrid() {
+  let bombs = props.bombs;
+  const size = props.rows * props.cols;
+  const newGrid = [];
+  if (bombs > size) {
+    console.log('more bombs than space on the grid!');
+    return;
+  }
+  for (let i = 0; i < size; i += 1) {
+    newGrid.push({
+      hasBomb: false,
+      isOpen: false,
+      hasFlag: false,
       bombCount: 0,
-      finished: false,
-      won: false,
-      grid: []
-    };
-  },
-  mounted() {
-    this.initGrid();
-  },
-  computed: {
-    getGridStyle() {
-      return `grid-template-columns: repeat(${this.cols}, 1fr);`;
-    }
-  },
-  methods: {
-    initGrid() {
-      let { bombs } = this;
-      const { cols, rows } = this;
-      const size = rows * cols;
-      const grid = [];
-      if (bombs > size) {
-        console.log('more bombs than space on the grid!');
-        return;
-      }
-      for (let i = 0; i < size; i += 1) {
-        grid.push({
-          hasBomb: false,
-          isOpen: false,
-          hasFlag: false,
-          bombCount: 0,
-          neighborhood: null
-        });
-      }
-      while (bombs > 0) {
-        const num = Math.floor(Math.random() * size);
-        if (grid[num].hasBomb === false) {
-          bombs -= 1;
-          grid[num].hasBomb = true;
-        }
-      }
-      this.grid = grid;
-      this.finished = true;
-      this.$nextTick(() => {
-        this.finished = false;
-      });
-      this.won = false;
-      this.bombCount = this.bombs;
-    },
-    haveWeWon() {
-      if (this.finished) {
-        return;
-      }
-      if (this.bombCount !== 0) {
-        return;
-      }
-      const remainingGrid = this.grid.find((g) => !g.isOpen && !g.hasFlag);
-      if (!remainingGrid) {
-        this.finished = true;
-        this.won = true;
-      }
-    },
-    addFlag(cell) {
-      if (this.finished) {
-        return;
-      }
-      if (cell.isOpen) {
-        return;
-      }
-      cell.hasFlag = !cell.hasFlag;
-      const { grid } = this;
-      const flagCount = grid.reduce((accumulator, currentValue) => {
-        if (currentValue.hasFlag) {
-          return accumulator + 1;
-        }
-        return accumulator;
-      }, 0);
-      this.bombCount = this.bombs - flagCount;
-      this.haveWeWon();
-    },
-    doubleClick(cell, i) {
-      if (this.finished) {
-        return;
-      }
-      if (cell.isOpen === false) {
-        return;
-      }
-      this.setNeighborhood(cell, i);
-      if (!cell.bombCount) {
-        return;
-      }
-
-      const { grid } = this;
-      let flagCount = 0;
-      cell.neighborhood.forEach((j) => {
-        if (grid[j].hasFlag) {
-          flagCount += 1;
-        }
-      });
-      if (flagCount === cell.bombCount) {
-        this.checkNeighborhood(cell, true);
-      }
-    },
-    clickCell(cell, i) {
-      if (this.finished) {
-        return;
-      }
-      if (cell.hasFlag) {
-        return;
-      }
-      if (cell.isOpen) {
-        return;
-      }
-      if (cell.hasBomb) {
-        const { grid } = this;
-        grid.forEach((checkCell) => {
-          if (checkCell.hasBomb) {
-            checkCell.isOpen = true;
-          }
-        });
-        this.finished = true;
-        return;
-      }
-
-      this.setNeighborhood(cell, i);
-      cell.isOpen = true;
-      this.checkNeighborhood(cell);
-      this.haveWeWon();
-    },
-    checkNeighborhood(cell, force) {
-      if (cell.bombCount !== 0 && force !== true) {
-        return;
-      }
-
-      const { grid } = this;
-      cell.neighborhood.forEach((i) => {
-        this.clickCell(grid[i], i);
-      });
-    },
-    setNeighborhood(cell, i) {
-      if (cell.neighborhood !== null) {
-        return;
-      }
-      const { grid } = this;
-      const neighborhood = [];
-      let bombCount = 0;
-      for (let x = -1; x < 2; x += 1) {
-        for (let y = -1; y < 2; y += 1) {
-          const cellIndex = this.getIndex(i, x, y);
-          if (cellIndex !== false) {
-            neighborhood.push(cellIndex);
-            if (grid[cellIndex].hasBomb) {
-              bombCount += 1;
-            }
-          }
-        }
-      }
-      cell.bombCount = bombCount;
-      cell.neighborhood = neighborhood;
-    },
-    getIndex(i, x, y) {
-      const { cols, rows } = this;
-      if (x === 0 && y === 0) {
-        return false;
-      }
-      if ((i % cols) + x < 0 || (i % cols) + x >= cols) {
-        return false;
-      }
-      if (Math.floor(i / cols) + y < 0 || Math.floor(i / cols) + y >= rows) {
-        return false;
-      }
-      return i + (y * cols + x);
-    }
-  },
-  watch: {
-    rows() {
-      this.initGrid();
-    },
-    cols() {
-      this.initGrid();
-    },
-    bombs() {
-      this.initGrid();
+      neighborhood: null
+    });
+  }
+  while (bombs > 0) {
+    const num = Math.floor(Math.random() * size);
+    if (newGrid[num].hasBomb === false) {
+      bombs -= 1;
+      newGrid[num].hasBomb = true;
     }
   }
-};
+  grid.value = newGrid;
+  finished.value = true;
+  nextTick(() => {
+    finished.value = false;
+  });
+  won.value = false;
+  bombCount.value = props.bombs;
+}
+
+function haveWeWon() {
+  if (finished.value) return;
+  if (bombCount.value !== 0) return;
+
+  const remainingGrid = grid.value.find((g) => !g.isOpen && !g.hasFlag);
+  if (!remainingGrid) {
+    finished.value = true;
+    won.value = true;
+  }
+}
+
+function addFlag(cell) {
+  if (finished.value || cell.isOpen) return;
+
+  cell.hasFlag = !cell.hasFlag;
+  const flagCount = grid.value.reduce((acc, curr) => (curr.hasFlag ? acc + 1 : acc), 0);
+  bombCount.value = props.bombs - flagCount;
+  haveWeWon();
+}
+
+function doubleClick(cell, i) {
+  if (finished.value || !cell.isOpen) return;
+
+  setNeighborhood(cell, i);
+  if (!cell.bombCount) return;
+
+  let flagCount = 0;
+  cell.neighborhood.forEach((j) => {
+    if (grid.value[j].hasFlag) flagCount += 1;
+  });
+
+  if (flagCount === cell.bombCount) checkNeighborhood(cell, true);
+}
+
+function clickCell(cell, i) {
+  if (finished.value || cell.hasFlag || cell.isOpen) return;
+
+  if (cell.hasBomb) {
+    grid.value.forEach((checkCell) => {
+      if (checkCell.hasBomb) checkCell.isOpen = true;
+    });
+    finished.value = true;
+    return;
+  }
+
+  setNeighborhood(cell, i);
+  cell.isOpen = true;
+  checkNeighborhood(cell);
+  haveWeWon();
+}
+
+function checkNeighborhood(cell, force) {
+  if (cell.bombCount !== 0 && !force) return;
+
+  cell.neighborhood.forEach((i) => clickCell(grid.value[i], i));
+}
+
+function setNeighborhood(cell, i) {
+  if (cell.neighborhood !== null) return;
+
+  const neighborhood = [];
+  let bombCount = 0;
+
+  for (let x = -1; x < 2; x += 1) {
+    for (let y = -1; y < 2; y += 1) {
+      const cellIndex = getIndex(i, x, y);
+      if (cellIndex !== false) {
+        neighborhood.push(cellIndex);
+        if (grid.value[cellIndex].hasBomb) bombCount += 1;
+      }
+    }
+  }
+  cell.bombCount = bombCount;
+  cell.neighborhood = neighborhood;
+}
+
+function getIndex(i, x, y) {
+  const { cols, rows } = props;
+
+  if (x === 0 && y === 0) return false;
+  if ((i % cols) + x < 0 || (i % cols) + x >= cols) return false;
+  if (Math.floor(i / cols) + y < 0 || Math.floor(i / cols) + y >= rows) return false;
+
+  return i + (y * cols + x);
+}
+
+watch(
+  () => [props.rows, props.cols, props.bombs],
+  () => {
+    initGrid();
+  },
+  { deep: true }
+);
+
+onMounted(() => {
+  initGrid();
+});
 </script>
 
 <template>
