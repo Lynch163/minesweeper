@@ -2,6 +2,7 @@
 import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import AppGame from '@/components/AppGame.vue';
+import AppThemeSwitcher from '@/components/AppThemeSwitcher.vue';
 
 const route = useRoute();
 
@@ -32,6 +33,7 @@ onMounted(() => {
           ←
         </RouterLink>
         <h3 class="d-inline btn">The minesweeper</h3>
+        <AppThemeSwitcher v-show="false" />
       </div>
     </div>
     <div class="container pb-3">

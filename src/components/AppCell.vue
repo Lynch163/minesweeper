@@ -37,8 +37,8 @@ const getClass = computed(() => {
   &-cell {
     align-items: center;
     background: rgba(0, 0, 0, 0.1);
-    border: 1px white solid;
-    color: #2c3e50;
+    border: 1px var(--background-color) solid;
+    color: var(--text-color);
     cursor: pointer;
     display: flex;
     font-size: 1.3em;
@@ -52,7 +52,7 @@ const getClass = computed(() => {
   }
 
   &-open {
-    background: rgba(0, 0, 0, 0.05);
+    background: var(--cell-open-background);
   }
 
   &-flag {
