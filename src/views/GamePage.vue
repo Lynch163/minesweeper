@@ -1,23 +1,30 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, RouterLink } from 'vue-router';
 import AppGame from '@/components/AppGame.vue';
 import AppThemeSwitcher from '@/components/AppThemeSwitcher.vue';
 
 const route = useRoute();
 
-const rows = ref(0);
-const cols = ref(0);
-const bombs = ref(0);
+const gameParams = ref({
+  rows: 0,
+  cols: 0,
+  bombs: 0
+});
 
 const doesItFit = computed(() => {
-  return rows.value * cols.value >= bombs.value;
+  return maxBombs.value >= gameParams.value.bombs;
+});
+
+const maxBombs = computed(() => {
+  const { rows, cols } = gameParams.value;
+  return rows * cols;
 });
 
 function initParams(params) {
-  rows.value = Number(params.rows);
-  cols.value = Number(params.cols);
-  bombs.value = Number(params.bombs);
+  gameParams.value.rows = Number(params.rows);
+  gameParams.value.cols = Number(params.cols);
+  gameParams.value.bombs = Number(params.bombs);
 }
 
 onMounted(() => {
@@ -38,12 +45,17 @@ onMounted(() => {
     </div>
     <div class="container pb-3">
       <div class="row justify-content-md-center">
-        <div class="col" v-if="doesItFit" :class="{ 'col-md-9 col-lg-7': cols < 14 }">
-          <AppGame :rows="rows" :cols="cols" :bombs="bombs" />
-        </div>
-        <div v-else>
-          <h3 class="text-center">416: Выход за пределы</h3>
-          <p>При заданном поле, количество мин должно быть не более {{ cols * rows }}</p>
+        <div class="col" :class="{ 'col-md-9 col-lg-7': gameParams.cols < 14 }">
+          <AppGame
+            v-if="doesItFit"
+            :rows="gameParams.rows"
+            :cols="gameParams.cols"
+            :bombs="gameParams.bombs"
+          />
+          <template v-else>
+            <h3 class="text-center">416: Выход за пределы</h3>
+            <p>При заданном поле, количество мин должно быть не более {{ maxBombs }}</p>
+          </template>
         </div>
       </div>
     </div>

@@ -9,18 +9,36 @@ const rowsCount = ref(9);
 const colsCount = ref(9);
 const bombsCount = ref(10);
 
-function updateRoute() {
-  const rows = rowsCount.value;
-  const cols = colsCount.value;
-  const bombs = bombsCount.value;
-  const params = Object.assign({
-    rows,
-    cols,
-    bombs
-  });
+const difficultyLevels = [
+  {
+    label: '😉 Легкий',
+    class: 'btn-success',
+    params: { rows: 9, cols: 9, bombs: 10 },
+    description: 'Простая игра с полем 9х9'
+  },
+  {
+    label: '🤨 Средний',
+    class: 'btn-warning',
+    params: { rows: 16, cols: 16, bombs: 40 },
+    description: 'Средний уровень с полем 16х16'
+  },
+  {
+    label: '🤯 Эксперт',
+    class: 'btn-danger',
+    params: { rows: 16, cols: 30, bombs: 99 },
+    description: 'Брось вызов 99 минам на поле 16x30'
+  }
+];
+
+function updateRoute(event) {
+  event.preventDefault();
   router.push({
     name: 'game',
-    params
+    params: {
+      rows: rowsCount.value,
+      cols: colsCount.value,
+      bombs: bombsCount.value
+    }
   });
 }
 </script>
@@ -34,56 +52,15 @@ function updateRoute() {
     <div class="container py-3">
       <h3>Выберите сложность</h3>
       <div class="row">
-        <div class="col-12 col-md-4 py-3">
+        <div v-for="(level, index) in difficultyLevels" :key="index" class="col-12 col-md-4 py-3">
           <RouterLink
-            href="#"
-            class="btn btn-lg btn-block btn-success"
-            :to="{
-              name: 'game',
-              params: {
-                rows: 9,
-                cols: 9,
-                bombs: 10
-              }
-            }"
+            :to="{ name: 'game', params: level.params }"
+            class="btn btn-lg btn-block"
+            :class="level.class"
           >
-            😉 Легкий
+            {{ level.label }}
           </RouterLink>
-          <p class="pt-3">Простая игра с полем 9х9</p>
-        </div>
-        <div class="col-12 col-md-4 py-3">
-          <RouterLink
-            href="#"
-            class="btn btn-lg btn-block btn-warning"
-            :to="{
-              name: 'game',
-              params: {
-                rows: 16,
-                cols: 16,
-                bombs: 40
-              }
-            }"
-          >
-            🤨 Средний
-          </RouterLink>
-          <p class="pt-3">Средний уровень с полем 16х16</p>
-        </div>
-        <div class="col-12 col-md-4 py-3">
-          <RouterLink
-            href="#"
-            class="btn btn-lg btn-block btn-danger"
-            :to="{
-              name: 'game',
-              params: {
-                rows: 16,
-                cols: 30,
-                bombs: 99
-              }
-            }"
-          >
-            🤯 Эксперт
-          </RouterLink>
-          <p class="pt-3">Брось вызов 99 минам на поле 16x99</p>
+          <p class="pt-3">{{ level.description }}</p>
         </div>
       </div>
     </div>
@@ -93,7 +70,7 @@ function updateRoute() {
         <h3>Либо укажите свои параметры</h3>
         <div class="row">
           <div class="form-group col-12 col-md-4">
-            <label for="input-rows"> Кол-во строк</label>
+            <label for="input-rows">Кол-во строк</label>
             <input
               type="number"
               v-model="rowsCount"
