@@ -8,41 +8,42 @@ const props = defineProps({
   }
 });
 
-const theTime = ref(0);
-const timer = ref(false);
-const timerReq = ref(null);
+const elapsedTime = ref(0);
+const startTime = ref(null);
+const animationFrameId = ref(null);
 
-function initTimer() {
+function startTimer(timestamp) {
+  if (!startTime.value) {
+    startTime.value = timestamp;
+  }
+  elapsedTime.value = (timestamp - startTime.value) / 1000;
+
+  if (!props.finished) {
+    animationFrameId.value = requestAnimationFrame(startTimer);
+  }
+}
+
+function stopTimer() {
+  if (animationFrameId.value) {
+    cancelAnimationFrame(animationFrameId.value);
+  }
+}
+
+function handleTimer() {
   if (props.finished) {
-    window.cancelAnimationFrame(timerReq.value);
+    stopTimer();
     return;
   }
-  timer.value = false;
-  timerReq.value = window.requestAnimationFrame(setTimer);
+
+  startTime.value = null;
+  animationFrameId.value = requestAnimationFrame(startTimer);
 }
 
-function setTimer(timestamp) {
-  if (!timer.value) {
-    timer.value = timestamp;
-  }
-  theTime.value = (timestamp - timer.value) / 1000;
-  if (!props.finished) {
-    window.requestAnimationFrame(setTimer);
-  }
-}
+watch(() => props.finished, handleTimer);
 
-watch(
-  () => props.finished,
-  () => {
-    initTimer();
-  }
-);
-
-onMounted(() => {
-  initTimer();
-});
+onMounted(handleTimer);
 </script>
 
 <template>
-  <div>{{ theTime.toFixed(1) }}</div>
+  <div>{{ elapsedTime.toFixed(1) }}</div>
 </template>
