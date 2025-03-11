@@ -1,15 +1,14 @@
 <script setup>
 import { computed } from 'vue';
 
-const prop = defineProps({
+const props = defineProps({
   cell: {
     type: Object,
     required: true
   }
 });
 
-const getClass = computed(() => {
-  const cell = prop.cell;
+const getCellClass = (cell) => {
   if (cell.isOpen && cell.hasBomb) {
     return 'minesweeper-bomb';
   }
@@ -20,11 +19,13 @@ const getClass = computed(() => {
     return 'minesweeper-flag';
   }
   return '';
-});
+};
+
+const cellClass = computed(() => getCellClass(props.cell));
 </script>
 
 <template>
-  <div class="minesweeper-cell" :class="getClass">
+  <div class="minesweeper-cell" :class="cellClass">
     <div v-if="cell.isOpen && cell.bombCount">
       {{ cell.bombCount }}
     </div>
